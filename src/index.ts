@@ -1,1 +1,2 @@
-export { RichTextEditor } from "./components/RichTextEditor";
+export { RichTextControl } from "./components/RichTextControl";
+export { RichTextViewer } from "./components/RichTextViewer";
