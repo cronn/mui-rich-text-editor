@@ -1,23 +1,18 @@
 import { TextField } from "@mui/material";
-import { OutlinedInputProps } from "@mui/material/OutlinedInput";
-import { ChangeEvent, FocusEvent, KeyboardEventHandler, Ref } from "react";
-import { FieldValues } from "react-hook-form";
-
+import type { OutlinedInputProps } from "@mui/material/OutlinedInput";
+import type { ChangeEvent, FocusEvent, KeyboardEventHandler, ReactElement, Ref } from "react";
+import type { FieldValues } from "react-hook-form";
 import { LoadingAdornment } from "./LoadingAdornment";
-import { NativeInputProps, UseControllerHook, getNativeInputProps } from "./utils";
-import { CustomFormControlProps } from "./utils";
-import { isDefined } from "./utils";
-import { controlledValue } from "./utils";
+import type { NativeInputProps, UseControllerHook, CustomFormControlProps } from "../lib/utils";
+import { getNativeInputProps, isDefined, controlledValue } from "../lib/utils";
 
 function getMuiInputProps(props: TextInputProps): Partial<OutlinedInputProps> | undefined {
     const { loading, monospace } = props;
-
     if (loading === undefined && monospace === undefined) {
         return undefined;
     }
-
     return {
-        ...(monospace && { style: { fontFamily: "monospace" } }),
+        ...(monospace === true && { style: { fontFamily: "monospace" } }),
         ...(loading !== undefined && { endAdornment: <LoadingAdornment loading={loading} /> }),
     };
 }
@@ -39,9 +34,10 @@ type TextInputProps = NativeInputProps & {
     disableTrimOnBlur?: boolean;
 };
 
-export function TextControl<TFormValues extends FieldValues>(props: TextControlProps<TFormValues> & { useController: UseControllerHook<TFormValues> }) {
+export function TextControl<TFormValues extends FieldValues>(
+    props: TextControlProps<TFormValues> & { useController: UseControllerHook<TFormValues> },
+): ReactElement {
     const { field, register } = props.useController(props);
-
     const nativeInputProps = getNativeInputProps(props);
     const muiInputProps = getMuiInputProps(props);
 
@@ -61,7 +57,7 @@ export function TextControl<TFormValues extends FieldValues>(props: TextControlP
     }
 
     function handleBlur(event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        const value = props.disableTrimOnBlur ? event.target.value : event.target.value.trim();
+        const value = props.disableTrimOnBlur === true ? event.target.value : event.target.value.trim();
         field.onChange(formatValue(value));
         field.onBlur();
     }

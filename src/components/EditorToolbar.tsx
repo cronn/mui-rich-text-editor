@@ -1,53 +1,59 @@
-// lib/components/toolbar/EditorToolbar.tsx
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import type { BoxProps} from "@mui/material";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/system";
 
+import type { AlignToggleButtonGroupTranslations } from "./AlignToggleButtonGroup";
 import { AlignToggleButtonGroup } from "./AlignToggleButtonGroup";
 import { FontColorDropdown } from "./FontColorDropdown";
 import { FontSizeDropdown } from "./FontSizeDropdown";
 import { ImageUploadButton } from "./ImageUploadButton";
-import { LinkButton, LinkButtonProps } from "./LinkButton";
-import type { CustomEditor } from "./useCustomEditor";
-import { useEditorActiveState } from "./useEditorActiveState";
-import { getToolbarButtonColor } from "./utils";
+import type { LinkButtonProps, LinkButtonTranslations } from "./LinkButton";
+import { LinkButton } from "./LinkButton";
+import type { CustomEditor } from "../lib/useCustomEditor";
+import { useEditorActiveState } from "../lib/useEditorActiveState";
+import { getToolbarButtonColor } from "../lib/utils";
+import defaultTranslations from "../lib/defaultTranslations";
+import type { ReactElement } from "react";
 
-export const ToolbarContainer = styled(Box)(({ theme }) => ({
+export const ToolbarContainer: React.ComponentType<BoxProps> = styled(Box)(({ theme }) => ({
     display: "flex",
     gap: theme.spacing(1),
     marginBottom: theme.spacing(1),
     flexWrap: "wrap",
 }));
 
-// everything LinkButton needs except what EditorToolbar already controls (editor/active)
-type LinkButtonInjectedProps = Omit<LinkButtonProps, "editor" | "active">;
+type LinkButtonInjectedProps = Omit<LinkButtonProps, "editor" | "active" | "translations">;
 
-export interface EditorToolbarLabels {
+export interface EditorToolbarTranslations {
     bold: string;
     italic: string;
     underline: string;
     bulletList: string;
     orderedList: string;
+    alignToggleButtonGroup: AlignToggleButtonGroupTranslations;
+    linkButtonTranslations: LinkButtonTranslations;
 }
 
 export interface EditorToolbarProps extends LinkButtonInjectedProps {
     editor: CustomEditor;
     disableLink?: boolean;
     disableImageUpload?: boolean;
-    labels: EditorToolbarLabels;
+    translations?: EditorToolbarTranslations;
 }
 
-export function EditorToolbar(props: EditorToolbarProps) {
+export function EditorToolbar(props: EditorToolbarProps): ReactElement {
     const active = useEditorActiveState(props.editor);
-    const { editor, disableLink, disableImageUpload, labels, ...linkButtonProps } = props;
+    const { editor, disableLink, disableImageUpload, ...linkButtonProps } = props;
+    const translations = props.translations ?? defaultTranslations.editorToolbar;
 
     return (
         <ToolbarContainer>
-            <Tooltip title={labels.bold}>
+            <Tooltip title={translations.bold}>
                 <IconButton
                     color={getToolbarButtonColor(active.bold)}
                     onClick={() => editor.chain().focus().toggleBold().run()}
@@ -55,7 +61,7 @@ export function EditorToolbar(props: EditorToolbarProps) {
                     <FormatBoldIcon />
                 </IconButton>
             </Tooltip>
-            <Tooltip title={labels.italic}>
+            <Tooltip title={translations.italic}>
                 <IconButton
                     color={getToolbarButtonColor(active.italic)}
                     onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -63,7 +69,7 @@ export function EditorToolbar(props: EditorToolbarProps) {
                     <FormatItalicIcon />
                 </IconButton>
             </Tooltip>
-            <Tooltip title={labels.underline}>
+            <Tooltip title={translations.underline}>
                 <IconButton
                     color={getToolbarButtonColor(active.underline)}
                     onClick={() => editor.chain().focus().toggleUnderline().run()}
@@ -73,8 +79,8 @@ export function EditorToolbar(props: EditorToolbarProps) {
             </Tooltip>
             <FontColorDropdown editor={editor} activeFontColor={active.fontColor} />
             <FontSizeDropdown editor={editor} activeFontSize={active.fontSize} />
-            <AlignToggleButtonGroup editor={editor} active={active} />
-            <Tooltip title={labels.bulletList}>
+            <AlignToggleButtonGroup editor={editor} active={active} translations={props.translations ? props.translations.alignToggleButtonGroup : undefined} />
+            <Tooltip title={translations.bulletList}>
                 <IconButton
                     color={getToolbarButtonColor(active.bulletList)}
                     onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -82,7 +88,7 @@ export function EditorToolbar(props: EditorToolbarProps) {
                     <FormatListBulletedIcon />
                 </IconButton>
             </Tooltip>
-            <Tooltip title={labels.orderedList}>
+            <Tooltip title={translations.orderedList}>
                 <IconButton
                     color={getToolbarButtonColor(active.orderedList)}
                     onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -90,8 +96,8 @@ export function EditorToolbar(props: EditorToolbarProps) {
                     <FormatListNumberedIcon />
                 </IconButton>
             </Tooltip>
-            {!disableLink && <LinkButton {...linkButtonProps} editor={editor} active={active.link} />}
-            {!disableImageUpload && <ImageUploadButton editor={editor} />}
+            {disableLink !== true && <LinkButton {...linkButtonProps} translations={props.translations ? props.translations.linkButtonTranslations : undefined} editor={editor} active={active.link} />}
+            {disableImageUpload !== true && <ImageUploadButton editor={editor} />}
         </ToolbarContainer>
     );
 }

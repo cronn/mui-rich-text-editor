@@ -1,10 +1,8 @@
-import type { FieldValues } from "react-hook-form";
-import type { FieldPath } from "react-hook-form/dist/types";
-import type { ControllerRenderProps } from "react-hook-form/dist/types/controller";
-
-import type { CustomEditor} from "./useCustomEditor";
+import type { FieldValues, FieldPath, ControllerRenderProps } from "react-hook-form";
+import type { CustomEditor } from "./useCustomEditor";
 import { useCustomEditor } from "./useCustomEditor";
 import { controlledValue } from "./utils";
+import type { Editor } from "@tiptap/core";
 
 export function useFormEditor<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>(
     field: ControllerRenderProps<TFieldValues, TName>,
@@ -12,15 +10,17 @@ export function useFormEditor<TFieldValues extends FieldValues, TName extends Fi
 ): CustomEditor {
     return useCustomEditor({
         content: controlledValue(normalizeValue(field.value)),
-        onUpdate: ({ editor }) => {
+        onUpdate: ({ editor }: { editor: Editor }) => {
             field.onChange(normalizeValue(editor.getHTML()));
         },
         disabled: disabled,
     });
 }
 
-function normalizeValue(value: string | undefined) {
-    return value === "<p></p>" || value === '<p><br class="ProseMirror-trailingBreak"></p>' || value === undefined
+function normalizeValue(value: string | undefined): string {
+    return value === "<p></p>" ||
+        value === '<p><br class="ProseMirror-trailingBreak"></p>' ||
+        value === undefined
         ? ""
         : value;
 }

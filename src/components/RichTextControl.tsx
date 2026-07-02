@@ -1,15 +1,14 @@
-// lib/components/form/RichTextControl.tsx
 import { Box, FormControl, FormHelperText } from "@mui/material";
 import { EditorContent } from "@tiptap/react";
 import type { JSX, Ref } from "react";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import type { FieldValues, RefCallBack } from "react-hook-form";
-
 import { RichTextEditorWrapper } from "./RichTextEditorWrapper";
-import { useFormEditor } from "./useFormEditor";
-import type { UseControllerHook } from "./utils";
-import { isDefined, isUndefined } from "./utils";
-import { EditorToolbar, EditorToolbarProps } from "./EditorToolbar";
+import { useFormEditor } from "../lib/useFormEditor";
+import type { UseControllerHook } from "../lib/utils";
+import { isDefined, isUndefined } from "../lib/utils";
+import type { EditorToolbarProps } from "./EditorToolbar";
+import { EditorToolbar } from "./EditorToolbar";
 
 type EditorToolbarInjectedProps = Omit<EditorToolbarProps, "editor" | "disableLink" | "disableImageUpload">;
 
@@ -20,6 +19,7 @@ export interface RichTextControlProps<TFormValues extends FieldValues> extends E
     disabled?: boolean;
     disableLink?: boolean;
     disableImageUpload?: boolean;
+    _unusedFormValuesBrand?: TFormValues;
 }
 
 export interface FieldRegistration {
@@ -67,8 +67,7 @@ function RichTextControlInner<TFormValues extends FieldValues>(
     }
 
     const label = required ? `${props.label} *` : props.label;
-    
-    const { disableLink, disableImageUpload, useController, ...toolbarInjectedProps } = props;
+    const { disableLink, disableImageUpload, useController: _useController, ...toolbarInjectedProps } = props;
 
     return (
         <FormControl {...register()} fullWidth disabled={props.disabled}>
@@ -80,10 +79,10 @@ function RichTextControlInner<TFormValues extends FieldValues>(
                     disableImageUpload={disableImageUpload}
                 />
                 <Box px={1} data-testid="editor-content">
-                    <EditorContent editor={editor} />
+                    <EditorContent editor={editor} aria-label={label} />
                 </Box>
             </RichTextEditorWrapper>
-            {helperText && <FormHelperText>{helperText}</FormHelperText>}
+            {helperText !== undefined && <FormHelperText>{helperText}</FormHelperText>}
         </FormControl>
     );
 }

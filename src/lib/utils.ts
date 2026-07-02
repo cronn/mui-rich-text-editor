@@ -1,10 +1,11 @@
-import { useForm, type Control, type ControllerRenderProps, type DefaultValues, type FieldPathByValue, type FieldValues, type Message, type Path, type PathValue, type Validate, type ValidationValueMessage} from "react-hook-form";
-import type { FieldRegistration, RichTextControlProps } from "./RichTextControl";
-import { InputBaseComponentProps } from "@mui/material";
+import type { UseFormGetValues, UseFormTrigger } from "react-hook-form";
+import { useForm, type Control, type ControllerRenderProps, type DefaultValues, type FieldPathByValue, type FieldValues, type Message, type Path, type PathValue, type Validate, type ValidationValueMessage } from "react-hook-form";
+import type { FieldRegistration } from "../components/RichTextControl";
+import type { InputBaseComponentProps, IconButtonProps } from "@mui/material";
 
 export type Align = "left" | "center" | "right";
 
-export function getToolbarButtonColor(active: boolean) {
+export function getToolbarButtonColor(active: boolean): IconButtonProps["color"] {
     return active ? "primary" : "default";
 }
 
@@ -38,12 +39,12 @@ type EmptyFormValue = "";
 
 export type FormInputValues<TFieldValues extends FieldValues> = {
     [TFieldName in keyof TFieldValues]-?: TFieldValues[TFieldName] extends null
-        ? TFieldValues[TFieldName]
-        : TFieldValues[TFieldName] extends FormValue | undefined
-          ? NonNullable<TFieldValues[TFieldName]> | EmptyFormValue
-          : TFieldValues[TFieldName] extends object
-            ? FormInputValues<TFieldValues[TFieldName]>
-            : TFieldValues[TFieldName];
+    ? TFieldValues[TFieldName]
+    : TFieldValues[TFieldName] extends FormValue | undefined
+    ? NonNullable<TFieldValues[TFieldName]> | EmptyFormValue
+    : TFieldValues[TFieldName] extends object
+    ? FormInputValues<TFieldValues[TFieldName]>
+    : TFieldValues[TFieldName];
 };
 
 export interface CustomFormControlProps<
@@ -72,7 +73,7 @@ export interface CustomValidationRules<
     minLength?: ValidationValueMessage<number>;
     maxLength?: ValidationValueMessage<number>;
     validate?: Validate<TFieldValue, TFormValues> | Record<string, Validate<TFieldValue, TFormValues>>;
-    deps?: Path<TFormValues> | Path<TFormValues>[];
+    deps?: Path<TFormValues> | Array<Path<TFormValues>>;
 }
 
 export interface NativeInputProps {
@@ -91,7 +92,16 @@ export interface UseCustomFormProps<TFieldValues extends FieldValues> {
     defaultValues?: DefaultValues<TFieldValues>;
 }
 
-export function useCustomForm<TFormValues extends FieldValues>(props: UseCustomFormProps<TFormValues>) {
+export function useCustomForm<TFormValues extends FieldValues>(
+    props: UseCustomFormProps<TFormValues>,
+): {
+    registerField: <TFieldValue = unknown>(
+        path: FieldPathByValue<TFormValues, TFieldValue>,
+        rules?: CustomValidationRules<TFormValues, TFieldValue>,
+    ) => RegisterFieldProps<TFormValues, TFieldValue>;
+    getValues: UseFormGetValues<TFormValues>;
+    trigger: UseFormTrigger<TFormValues>;
+} {
     const { control, getValues, trigger } = useForm<TFormValues>({
         mode: "onTouched",
         reValidateMode: "onChange",

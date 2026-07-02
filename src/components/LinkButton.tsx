@@ -1,10 +1,13 @@
 import LinkIcon from "@mui/icons-material/Link";
 import { IconButton, Tooltip } from "@mui/material";
+import type { ReactElement} from "react";
 import { useState } from "react";
 
-import { LinkDialog, LinkDialogProps } from "./LinkDialog";
-import type { CustomEditor } from "./useCustomEditor";
-import { getToolbarButtonColor } from "./utils";
+import type { LinkDialogProps, LinkDialogTranslations } from "./LinkDialog";
+import { LinkDialog } from "./LinkDialog";
+import type { CustomEditor } from "../lib/useCustomEditor";
+import { getToolbarButtonColor } from "../lib/utils";
+import defaultTranslations from "../lib/defaultTranslations";
 
 function normalizeUrl(url: string): string {
     if (!/^https?:\/\//i.test(url)) {
@@ -13,16 +16,22 @@ function normalizeUrl(url: string): string {
     return url;
 }
 
-type LinkDialogInjectedProps = Omit<LinkDialogProps, "onSubmit" | "onClose" | "open">;
+type LinkDialogInjectedProps = Omit<LinkDialogProps, "onSubmit" | "onClose" | "open" | "translations">;
+
+export interface LinkButtonTranslations {
+    tooltip: string;
+    linkDialog: LinkDialogTranslations;
+}
 
 export interface LinkButtonProps extends LinkDialogInjectedProps {
     editor: CustomEditor;
     active: boolean;
-    tooltipLabel: string;
+    translations?: LinkButtonTranslations;
 }
 
-export function LinkButton(props: LinkButtonProps) {
+export function LinkButton(props: LinkButtonProps): ReactElement {
     const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+    const { editor, active, ...linkDialogProps } = props;
 
     function openLinkDialog() {
         setLinkDialogOpen(true);
@@ -33,14 +42,14 @@ export function LinkButton(props: LinkButtonProps) {
     }
 
     function handleLinkSubmit(url: string) {
-        props.editor.chain().focus().setLink({ href: normalizeUrl(url) }).run();
+        editor.chain().focus().setLink({ href: normalizeUrl(url) }).run();
     }
 
-    const { editor, active, tooltipLabel, ...linkDialogProps } = props;
+    const translations = props.translations ?? defaultTranslations.linkButton;
 
     return (
         <>
-            <Tooltip title={tooltipLabel}>
+            <Tooltip title={translations.tooltip}>
                 <IconButton color={getToolbarButtonColor(active)} onClick={openLinkDialog}>
                     <LinkIcon />
                 </IconButton>
@@ -51,6 +60,7 @@ export function LinkButton(props: LinkButtonProps) {
                     open={linkDialogOpen}
                     onClose={closeLinkDialog}
                     onSubmit={handleLinkSubmit}
+                    translations={props.translations ? props.translations.linkDialog : defaultTranslations.linkDialog}
                 />
             )}
         </>

@@ -10,7 +10,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { FontSize, TextStyle } from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import { Dropcursor } from "@tiptap/extensions";
-import type { Editor} from "@tiptap/react";
+import type { Editor } from "@tiptap/react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import type { EditorState } from "prosemirror-state";
@@ -71,13 +71,15 @@ const CustomImage = Image.extend({
             },
             width: {
                 default: null,
-                parseHTML: (el) => el.getAttribute("width") || null,
-                renderHTML: (attrs) => (attrs.width ? { width: attrs.width } : {}),
+                parseHTML: (el) => el.getAttribute("width") ?? null,
+                renderHTML: (attrs: { width: string | null }) =>
+                    attrs.width !== null ? { width: attrs.width } : {},
             },
             height: {
                 default: null,
-                parseHTML: (el) => el.getAttribute("height") || null,
-                renderHTML: (attrs) => (attrs.height ? { height: attrs.height } : {}),
+                parseHTML: (el) => el.getAttribute("height") ?? null,
+                renderHTML: (attrs: { height: string | null }) =>
+                    attrs.height !== null ? { height: attrs.height } : {},
             },
         };
     },
@@ -108,7 +110,7 @@ const CustomImage = Image.extend({
                             src: opts.src,
                             width: opts.width,
                             height: opts.height,
-                            align: opts.align || "center",
+                            align: opts.align ?? "center",
                         },
                     }),
             setImageAlign:
@@ -137,7 +139,7 @@ interface UseCustomEditorProps {
 export function useCustomEditor(props: UseCustomEditorProps): CustomEditor {
     return useEditor({
         immediatelyRender: false,
-        editable: !props.disabled,
+        editable: props.disabled !== true,
         extensions: [
             StarterKit,
             Underline,

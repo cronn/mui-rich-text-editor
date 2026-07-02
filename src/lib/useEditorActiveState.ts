@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import type { CustomEditor } from "./useCustomEditor";
 import type { Align } from "./utils";
 
@@ -16,7 +15,7 @@ export interface ActiveMarks {
     link: boolean;
 }
 
-export function useEditorActiveState(editor: CustomEditor) {
+export function useEditorActiveState(editor: CustomEditor): ActiveMarks {
     const [activeMarks, setActiveMarks] = useState<ActiveMarks>({
         bold: false,
         italic: false,
@@ -36,14 +35,18 @@ export function useEditorActiveState(editor: CustomEditor) {
                 return;
             }
 
+            const textStyleAttrs = editor.getAttributes("textStyle") as { color?: string; fontSize?: string };
+            const paragraphAttrs = editor.getAttributes("paragraph") as { textAlign?: Align };
+            const imageAttrs = editor.getAttributes("customImage") as { align?: Align };
+
             setActiveMarks({
                 bold: editor.isActive("bold"),
                 italic: editor.isActive("italic"),
                 underline: editor.isActive("underline"),
-                fontColor: editor.getAttributes("textStyle").color,
-                fontSize: editor.getAttributes("textStyle").fontSize,
-                textAlign: editor.getAttributes("paragraph")?.textAlign,
-                imageAlign: editor.getAttributes("customImage")?.align,
+                fontColor: textStyleAttrs.color,
+                fontSize: textStyleAttrs.fontSize,
+                textAlign: paragraphAttrs.textAlign,
+                imageAlign: imageAttrs.align,
                 bulletList: editor.isActive("bulletList"),
                 orderedList: editor.isActive("orderedList"),
                 link: editor.isActive("link"),

@@ -1,16 +1,22 @@
 import ImageIcon from "@mui/icons-material/Image";
 import { IconButton, Tooltip } from "@mui/material";
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, ReactElement } from "react";
 
-import type { CustomEditor } from "./useCustomEditor";
-import { CUSTOM_EDITOR_IMAGE_MAX_WIDTH } from "./useCustomEditor";
-import { isUndefined } from "./utils";
+import type { CustomEditor } from "../lib/useCustomEditor";
+import { CUSTOM_EDITOR_IMAGE_MAX_WIDTH } from "../lib/useCustomEditor";
+import { isUndefined } from "../lib/utils";
+import defaultTranslations from "../lib/defaultTranslations";
+
+export interface ImageUploadButtonTranslations {
+    tooltip: string;
+}
 
 interface ImageUploadButtonProps {
     editor: CustomEditor;
+    translations?: ImageUploadButtonTranslations;
 }
 
-export function ImageUploadButton(props: ImageUploadButtonProps) {
+export function ImageUploadButton(props: ImageUploadButtonProps): ReactElement {
 
     function handleUpload(event: ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
@@ -21,8 +27,10 @@ export function ImageUploadButton(props: ImageUploadButtonProps) {
         insertResizedImage(file, props.editor);
     }
 
+    const translations = props.translations ?? defaultTranslations.imageUploadButton;
+
     return (
-        <Tooltip title={"TODO Grafik hochladen"}>
+        <Tooltip title={translations.tooltip}>
             <IconButton component="label">
                 <ImageIcon />
                 <input

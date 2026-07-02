@@ -2,40 +2,70 @@ import { CircleRounded, MotionPhotosOffOutlined } from "@mui/icons-material";
 import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
 import { Box } from "@mui/system";
+import type { ReactElement } from "react";
 import { useRef, useState } from "react";
+import type { CustomEditor } from "../lib/useCustomEditor";
+import { Colors } from "../lib/colors";
+import { isDefined, isUndefined } from "../lib/utils";
+import defaultTranslations from "../lib/defaultTranslations";
 
-import type { CustomEditor } from "./useCustomEditor";
-import { Colors } from "./colors";
-import { isDefined, isUndefined } from "./utils";
-
-interface ColorItem {
-    name: string;
-    hex: string;
+export interface FontColorDropdownTranslations {
+    tooltip: string;
+    automatic: string;
+    colors: {
+        black: string;
+        gray: string;
+        red: string;
+        blue: string;
+        turquoise: string;
+        green: string;
+        orange: string;
+        purple: string;
+        pink: string;
+    }
 }
-
-const colors: Array<ColorItem> = [
-    { name: "TODO Schwarz", hex: Colors.Black },
-    { name: "TODO Grau", hex: Colors.Gray },
-    { name: "TODO Rot", hex: Colors.Red },
-    { name: "TODO Blau", hex: Colors.Blue },
-    { name: "TODO Türkis", hex: Colors.Turquoise },
-    { name: "TODO Grün", hex: Colors.Green },
-    { name: "TODO Orange", hex: Colors.Orange },
-    { name: "TODO Lila", hex: Colors.Purple },
-    { name: "TODO Pink", hex: Colors.Pink },
-];
 
 interface FontColorDropdownProps {
     editor: CustomEditor;
     activeFontColor?: string;
+    translations?: FontColorDropdownTranslations;
 }
 
-export function FontColorDropdown(props: FontColorDropdownProps) {
+function getColorName(color: Colors, translations?: FontColorDropdownTranslations): string {
+    const colorTranslations = translations?.colors ?? defaultTranslations.fontColorDropdown.colors;
+
+    switch (color) {
+        case Colors.Black:
+            return colorTranslations.black;
+        case Colors.Gray:
+            return colorTranslations.gray;
+        case Colors.Red:
+            return colorTranslations.red;
+        case Colors.Blue:
+            return colorTranslations.blue;
+        case Colors.Turquoise:
+            return colorTranslations.turquoise;
+        case Colors.Green:
+            return colorTranslations.green;
+        case Colors.Orange:
+            return colorTranslations.orange;
+        case Colors.Purple:
+            return colorTranslations.purple;
+        case Colors.Pink:
+            return colorTranslations.pink;
+        default:
+            return "";
+    }
+}
+
+export function FontColorDropdown(props: FontColorDropdownProps): ReactElement {
     const [open, setOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
-    const currentFontColor = props.editor.getAttributes("textStyle").color;
+    const currentFontColor = (props.editor.getAttributes("textStyle") as { color?: string }).color;
     const isActive = isDefined(props.activeFontColor) && props.activeFontColor === currentFontColor;
+
+    const translations = props.translations ?? defaultTranslations.fontColorDropdown;
 
     function handleOpenMenu() {
         setOpen(true);
@@ -56,7 +86,7 @@ export function FontColorDropdown(props: FontColorDropdownProps) {
 
     return (
         <Box>
-            <Tooltip title={"TODO Textfarbe"}>
+            <Tooltip title={translations.tooltip}>
                 <IconButton color={isActive ? "primary" : undefined} onClick={handleOpenMenu} ref={menuButtonRef}>
                     <FormatColorTextIcon />
                 </IconButton>
@@ -67,18 +97,18 @@ export function FontColorDropdown(props: FontColorDropdownProps) {
                     <ListItemIcon>
                         <MotionPhotosOffOutlined />
                     </ListItemIcon>
-                    <ListItemText>{"TODO Automatisch"}</ListItemText>
+                    <ListItemText>{translations.automatic}</ListItemText>
                 </MenuItem>
-                {colors.map((color) => (
+                {Object.values(Colors).map((color) => (
                     <MenuItem
-                        key={color.hex}
-                        selected={currentFontColor === color.hex}
-                        onClick={() => handleColorSelect(color.hex)}
+                        key={color}
+                        selected={currentFontColor === color}
+                        onClick={() => handleColorSelect(color)}
                     >
                         <ListItemIcon>
-                            <CircleRounded sx={{ color: color.hex }} />
+                            <CircleRounded sx={{ color }} />
                         </ListItemIcon>
-                        <ListItemText>{color.name}</ListItemText>
+                        <ListItemText>{getColorName(color, props.translations)}</ListItemText>
                     </MenuItem>
                 ))}
             </Menu>
