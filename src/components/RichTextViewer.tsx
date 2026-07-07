@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { EditorContent } from "@tiptap/react";
-import type { ReactElement} from "react";
+import type { ReactNode } from "react";
 import { useEffect } from "react";
 
 import { RichTextEditorWrapper } from "./RichTextEditorWrapper";
@@ -11,7 +11,7 @@ interface RichTextViewerProps {
     value: string;
 }
 
-export function RichTextViewer(props: RichTextViewerProps): ReactElement {
+export function RichTextViewer(props: RichTextViewerProps): ReactNode {
     const editor = useCustomEditor({
         content: props.value,
         disabled: true,

@@ -73,6 +73,7 @@
     "@mui/system": "6.5.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@tiptap/core": "^3.0.0",
     "@tiptap/extension-color": "^3.0.0",
     "@tiptap/extension-document": "^3.0.0",

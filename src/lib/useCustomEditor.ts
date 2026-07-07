@@ -1,5 +1,4 @@
-import type { CommandProps, HTMLContent, JSONContent } from "@tiptap/core";
-import type { EditorEvents } from "@tiptap/core/dist";
+import type { CommandProps, EditorEvents, HTMLContent, JSONContent } from "@tiptap/core";
 import Color from "@tiptap/extension-color";
 import Document from "@tiptap/extension-document";
 import Image from "@tiptap/extension-image";
