@@ -6,81 +6,87 @@ import type { LinkDialogFormValues } from "../components/LinkDialog";
 import { LinkDialog } from "../components/LinkDialog";
 import { createTestUseForm, useTestFormController } from "./rhf-harness";
 
-function renderLinkDialog(overrides: Partial<Parameters<typeof LinkDialog>[0]> = {}) {
-    const onSubmit = vi.fn();
-    const onClose = vi.fn();
-    const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
+function renderLinkDialog(
+  overrides: Partial<Parameters<typeof LinkDialog>[0]> = {},
+) {
+  const onSubmit = vi.fn();
+  const onClose = vi.fn();
+  const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
 
-    const renderResult = render(
-        <LinkDialog
-            open
-            onSubmit={onSubmit}
-            onClose={onClose}
-            useForm={useForm}
-            useUrlFieldController={useTestFormController()}
-            {...overrides}
-        />,
-    );
+  const renderResult = render(
+    <LinkDialog
+      open
+      onSubmit={onSubmit}
+      onClose={onClose}
+      useForm={useForm}
+      useUrlFieldController={useTestFormController()}
+      {...overrides}
+    />,
+  );
 
-    return { onSubmit, onClose, ...renderResult };
+  return { onSubmit, onClose, ...renderResult };
 }
 
 describe("LinkDialog", () => {
-    it("renders the title, URL field and CTA button using default translations", () => {
-        renderLinkDialog();
+  it("renders the title, URL field and CTA button using default translations", () => {
+    renderLinkDialog();
 
-        expect(screen.getByRole("heading", { name: "Link hinzufügen" })).toBeInTheDocument();
-        expect(screen.getByLabelText("Link-URL *")).toBeInTheDocument();
-        expect(screen.getByTestId("cta-button")).toHaveTextContent("Link hinzufügen");
+    expect(
+      screen.getByRole("heading", { name: "Link hinzufügen" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Link-URL *")).toBeInTheDocument();
+    expect(screen.getByTestId("cta-button")).toHaveTextContent(
+      "Link hinzufügen",
+    );
+  });
+
+  it("uses custom translations when provided", () => {
+    renderLinkDialog({
+      translations: {
+        title: "Add Link",
+        urlLabel: "URL",
+        urlRequiredMessage: "URL required",
+        ctaLabel: "Add",
+      },
     });
 
-    it("uses custom translations when provided", () => {
-        renderLinkDialog({
-            translations: {
-                title: "Add Link",
-                urlLabel: "URL",
-                urlRequiredMessage: "URL required",
-                ctaLabel: "Add",
-            },
-        });
+    expect(screen.getByText("Add Link")).toBeInTheDocument();
+    expect(screen.getByLabelText("URL *")).toBeInTheDocument();
+    expect(screen.getByTestId("cta-button")).toHaveTextContent("Add");
+  });
 
-        expect(screen.getByText("Add Link")).toBeInTheDocument();
-        expect(screen.getByLabelText("URL *")).toBeInTheDocument();
-        expect(screen.getByTestId("cta-button")).toHaveTextContent("Add");
+  it("shows a validation error and does not submit when the URL is empty", async () => {
+    const user = userEvent.setup();
+    const { onSubmit, onClose } = renderLinkDialog();
+
+    await user.click(screen.getByTestId("cta-button"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Bitte eine URL eingeben.")).toBeInTheDocument();
     });
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+  });
 
-    it("shows a validation error and does not submit when the URL is empty", async () => {
-        const user = userEvent.setup();
-        const { onSubmit, onClose } = renderLinkDialog();
+  it("calls onSubmit with the URL and onClose when valid", async () => {
+    const user = userEvent.setup();
+    const { onSubmit, onClose } = renderLinkDialog();
 
-        await user.click(screen.getByTestId("cta-button"));
+    await user.type(screen.getByLabelText("Link-URL *"), "example.com");
+    await user.click(screen.getByTestId("cta-button"));
 
-        await waitFor(() => {
-            expect(screen.getByText("Bitte eine URL eingeben.")).toBeInTheDocument();
-        });
-        expect(onSubmit).not.toHaveBeenCalled();
-        expect(onClose).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledWith("example.com");
     });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
 
-    it("calls onSubmit with the URL and onClose when valid", async () => {
-        const user = userEvent.setup();
-        const { onSubmit, onClose } = renderLinkDialog();
+  it("calls onClose when the close (X) button is clicked", async () => {
+    const user = userEvent.setup();
+    const { onClose } = renderLinkDialog();
 
-        await user.type(screen.getByLabelText("Link-URL *"), "example.com");
-        await user.click(screen.getByTestId("cta-button"));
+    await user.click(screen.getByRole("button", { name: "Abbrechen" }));
 
-        await waitFor(() => {
-            expect(onSubmit).toHaveBeenCalledWith("example.com");
-        });
-        expect(onClose).toHaveBeenCalledTimes(1);
-    });
-
-    it("calls onClose when the close (X) button is clicked", async () => {
-        const user = userEvent.setup();
-        const { onClose } = renderLinkDialog();
-
-        await user.click(screen.getByRole("button", { name: "Abbrechen" }));
-
-        expect(onClose).toHaveBeenCalledTimes(1);
-    });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
 });

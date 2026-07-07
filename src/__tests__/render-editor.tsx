@@ -7,15 +7,15 @@ import type { CustomEditor } from "../lib/useCustomEditor";
 import { useCustomEditor } from "../lib/useCustomEditor";
 
 interface RenderEditorOptions {
-    content?: HTMLContent | JSONContent | Array<JSONContent> | null;
-    disabled?: boolean;
-    onUpdate?: (props: EditorEvents["update"]) => void;
+  content?: HTMLContent | JSONContent | Array<JSONContent> | null;
+  disabled?: boolean;
+  onUpdate?: (props: EditorEvents["update"]) => void;
 }
 
 interface RenderEditorResult {
-    editor: CustomEditor;
-    container: HTMLElement;
-    rerender: () => void;
+  editor: CustomEditor;
+  container: HTMLElement;
+  rerender: () => void;
 }
 
 /**
@@ -23,36 +23,38 @@ interface RenderEditorResult {
  * waits for the ProseMirror view to attach (tiptap uses `immediatelyRender: false`),
  * and returns the live editor instance for driving commands in tests.
  */
-export async function renderEditor(options: RenderEditorOptions = {}): Promise<RenderEditorResult> {
-    let latestEditor: CustomEditor | undefined;
+export async function renderEditor(
+  options: RenderEditorOptions = {},
+): Promise<RenderEditorResult> {
+  let latestEditor: CustomEditor | undefined;
 
-    function Host(): ReactElement {
-        const editor = useCustomEditor({
-            content: options.content ?? "",
-            disabled: options.disabled,
-            onUpdate: options.onUpdate,
-        });
-        latestEditor = editor;
-        return <EditorContent editor={editor} />;
-    }
-
-    const { container, rerender: rtlRerender } = render(<Host />);
-
-    await waitFor(() => {
-        if (container.querySelector(".ProseMirror") === null) {
-            throw new Error("ProseMirror view not attached yet");
-        }
+  function Host(): ReactElement {
+    const editor = useCustomEditor({
+      content: options.content ?? "",
+      disabled: options.disabled,
+      onUpdate: options.onUpdate,
     });
+    latestEditor = editor;
+    return <EditorContent editor={editor} />;
+  }
 
-    if (!latestEditor) {
-        throw new Error("Editor failed to initialize");
+  const { container, rerender: rtlRerender } = render(<Host />);
+
+  await waitFor(() => {
+    if (container.querySelector(".ProseMirror") === null) {
+      throw new Error("ProseMirror view not attached yet");
     }
+  });
 
-    return {
-        editor: latestEditor,
-        container,
-        rerender: () => rtlRerender(<Host />),
-    };
+  if (!latestEditor) {
+    throw new Error("Editor failed to initialize");
+  }
+
+  return {
+    editor: latestEditor,
+    container,
+    rerender: () => rtlRerender(<Host />),
+  };
 }
 
 /**
@@ -60,7 +62,7 @@ export async function renderEditor(options: RenderEditorOptions = {}): Promise<R
  * updates (e.g. from `onUpdate`/active-state listeners) are flushed.
  */
 export function runInAct(fn: () => void): void {
-    act(() => {
-        fn();
-    });
+  act(() => {
+    fn();
+  });
 }

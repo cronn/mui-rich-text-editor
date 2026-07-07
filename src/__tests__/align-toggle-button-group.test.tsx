@@ -8,69 +8,80 @@ import { renderEditor } from "./render-editor";
 import type { CustomEditor } from "../lib/useCustomEditor";
 
 afterEach(() => {
-    cleanup();
+  cleanup();
 });
 
 function Harness({ editor }: { editor: CustomEditor }) {
-    const active = useEditorActiveState(editor);
-    return <AlignToggleButtonGroup editor={editor} active={active} />;
+  const active = useEditorActiveState(editor);
+  return <AlignToggleButtonGroup editor={editor} active={active} />;
 }
 
 describe("AlignToggleButtonGroup", () => {
-    it("renders left/center/right buttons with default translations", async () => {
-        const { editor } = await renderEditor({ content: "<p>Hello</p>" });
-        render(<Harness editor={editor} />);
+  it("renders left/center/right buttons with default translations", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    render(<Harness editor={editor} />);
 
-        expect(screen.getByRole("button", { name: "Links" })).toBeInTheDocument();
-        expect(screen.getByRole("button", { name: "Zentriert" })).toBeInTheDocument();
-        expect(screen.getByRole("button", { name: "Rechts" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Links" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Zentriert" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Rechts" })).toBeInTheDocument();
+  });
+
+  it("sets text alignment to center when the center button is clicked", async () => {
+    const user = userEvent.setup();
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    render(<Harness editor={editor} />);
+
+    await user.click(screen.getByRole("button", { name: "Zentriert" }));
+
+    await waitFor(() => {
+      expect(
+        (editor.getAttributes("paragraph") as { textAlign?: string }).textAlign,
+      ).toBe("center");
     });
+  });
 
-    it("sets text alignment to center when the center button is clicked", async () => {
-        const user = userEvent.setup();
-        const { editor } = await renderEditor({ content: "<p>Hello</p>" });
-        render(<Harness editor={editor} />);
+  it("sets text alignment to left when the left button is clicked", async () => {
+    const user = userEvent.setup();
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    editor.commands.setTextAlign("right");
+    render(<Harness editor={editor} />);
 
-        await user.click(screen.getByRole("button", { name: "Zentriert" }));
+    await user.click(screen.getByRole("button", { name: "Links" }));
 
-        await waitFor(() => {
-            expect((editor.getAttributes("paragraph") as { textAlign?: string }).textAlign).toBe("center");
-        });
+    await waitFor(() => {
+      expect(
+        (editor.getAttributes("paragraph") as { textAlign?: string }).textAlign,
+      ).toBe("left");
     });
+  });
 
-    it("sets text alignment to left when the left button is clicked", async () => {
-        const user = userEvent.setup();
-        const { editor } = await renderEditor({ content: "<p>Hello</p>" });
-        editor.commands.setTextAlign("right");
-        render(<Harness editor={editor} />);
+  it("sets text alignment to right when the right button is clicked", async () => {
+    const user = userEvent.setup();
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    render(<Harness editor={editor} />);
 
-        await user.click(screen.getByRole("button", { name: "Links" }));
+    await user.click(screen.getByRole("button", { name: "Rechts" }));
 
-        await waitFor(() => {
-            expect((editor.getAttributes("paragraph") as { textAlign?: string }).textAlign).toBe("left");
-        });
+    await waitFor(() => {
+      expect(
+        (editor.getAttributes("paragraph") as { textAlign?: string }).textAlign,
+      ).toBe("right");
     });
+  });
 
-    it("sets text alignment to right when the right button is clicked", async () => {
-        const user = userEvent.setup();
-        const { editor } = await renderEditor({ content: "<p>Hello</p>" });
-        render(<Harness editor={editor} />);
+  it("marks the current text alignment button as selected", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    render(<Harness editor={editor} />);
 
-        await user.click(screen.getByRole("button", { name: "Rechts" }));
+    editor.chain().focus().setTextAlign("right").run();
 
-        await waitFor(() => {
-            expect((editor.getAttributes("paragraph") as { textAlign?: string }).textAlign).toBe("right");
-        });
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Rechts" })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
     });
-
-    it("marks the current text alignment button as selected", async () => {
-        const { editor } = await renderEditor({ content: "<p>Hello</p>" });
-        render(<Harness editor={editor} />);
-
-        editor.chain().focus().setTextAlign("right").run();
-
-        await waitFor(() => {
-            expect(screen.getByRole("button", { name: "Rechts" })).toHaveAttribute("aria-pressed", "true");
-        });
-    });
+  });
 });

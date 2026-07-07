@@ -1,14 +1,18 @@
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
-import type { DefaultValues, FieldValues, UseFormReturn } from "react-hook-form";
+import type {
+  DefaultValues,
+  FieldValues,
+  UseFormReturn,
+} from "react-hook-form";
 import { useController, useForm } from "react-hook-form";
 
 import type { FieldRegistration } from "../components/RichTextControl";
 import type {
-    CustomFormControlProps,
-    RegisterFieldProps,
-    UseControllerHook,
-    UseCustomFormReturn,
+  CustomFormControlProps,
+  RegisterFieldProps,
+  UseControllerHook,
+  UseCustomFormReturn,
 } from "../lib/utils";
 import { useCustomForm } from "../lib/utils";
 
@@ -25,29 +29,32 @@ import { useCustomForm } from "../lib/utils";
  * practice; the assertion below documents and contains that assumption.
  */
 function useControllerImpl<TFormValues extends FieldValues>(
-    props: CustomFormControlProps<TFormValues>,
+  props: CustomFormControlProps<TFormValues>,
 ): {
-    field: ReturnType<typeof useController<TFormValues>>["field"];
-    register: () => FieldRegistration;
+  field: ReturnType<typeof useController<TFormValues>>["field"];
+  register: () => FieldRegistration;
 } {
-    const { field, fieldState } = useController<TFormValues>({
-        control: props.control,
-        name: props.name,
-        rules: props.rules,
-    });
+  const { field, fieldState } = useController<TFormValues>({
+    control: props.control,
+    name: props.name,
+    rules: props.rules,
+  });
 
-    function register(): FieldRegistration {
-        return {
-            inputRef: field.ref,
-            label: props.label,
-            required: props.rules?.required !== undefined,
-            disabled: props.disabled ?? false,
-            error: fieldState.invalid,
-            helperText: props.hideHelperText === true ? undefined : (fieldState.error?.message ?? props.helperText),
-        };
-    }
+  function register(): FieldRegistration {
+    return {
+      inputRef: field.ref,
+      label: props.label,
+      required: props.rules?.required !== undefined,
+      disabled: props.disabled ?? false,
+      error: fieldState.invalid,
+      helperText:
+        props.hideHelperText === true
+          ? undefined
+          : (fieldState.error?.message ?? props.helperText),
+    };
+  }
 
-    return { field, register };
+  return { field, register };
 }
 
 /**
@@ -62,8 +69,10 @@ function useControllerImpl<TFormValues extends FieldValues>(
  * cast is safe in practice; it's exposed as a small typed helper so each
  * call site can instantiate it for its own `TFormValues`.
  */
-export function useTestFormController<TFormValues extends FieldValues>(): UseControllerHook<TFormValues> {
-    return useControllerImpl as unknown as UseControllerHook<TFormValues>;
+export function useTestFormController<
+  TFormValues extends FieldValues,
+>(): UseControllerHook<TFormValues> {
+  return useControllerImpl as unknown as UseControllerHook<TFormValues>;
 }
 
 /**
@@ -76,30 +85,37 @@ export function useTestFormController<TFormValues extends FieldValues>(): UseCon
  * react-hook-form.
  */
 export function createBoundTestController<TFormValues extends FieldValues>(
-    binding: RegisterFieldProps<TFormValues>,
+  binding: RegisterFieldProps<TFormValues>,
 ): UseControllerHook<TFormValues> {
-    function useBoundController(props: { label: string; helperText?: string; hideHelperText?: boolean; disabled?: boolean }): {
-        field: ReturnType<typeof useController<TFormValues>>["field"];
-        register: () => FieldRegistration;
-    } {
-        const { field, fieldState } = useController<TFormValues>(binding);
+  function useBoundController(props: {
+    label: string;
+    helperText?: string;
+    hideHelperText?: boolean;
+    disabled?: boolean;
+  }): {
+    field: ReturnType<typeof useController<TFormValues>>["field"];
+    register: () => FieldRegistration;
+  } {
+    const { field, fieldState } = useController<TFormValues>(binding);
 
-        function register(): FieldRegistration {
-            return {
-                inputRef: field.ref,
-                label: props.label,
-                required: binding.rules?.required !== undefined,
-                disabled: props.disabled ?? false,
-                error: fieldState.invalid,
-                helperText:
-                    props.hideHelperText === true ? undefined : (fieldState.error?.message ?? props.helperText),
-            };
-        }
-
-        return { field, register };
+    function register(): FieldRegistration {
+      return {
+        inputRef: field.ref,
+        label: props.label,
+        required: binding.rules?.required !== undefined,
+        disabled: props.disabled ?? false,
+        error: fieldState.invalid,
+        helperText:
+          props.hideHelperText === true
+            ? undefined
+            : (fieldState.error?.message ?? props.helperText),
+      };
     }
 
-    return useBoundController as unknown as UseControllerHook<TFormValues>;
+    return { field, register };
+  }
+
+  return useBoundController as unknown as UseControllerHook<TFormValues>;
 }
 
 /**
@@ -108,13 +124,13 @@ export function createBoundTestController<TFormValues extends FieldValues>(
  * `useCustomForm` (react-hook-form under the hood).
  */
 export function createTestUseForm<TFormValues extends FieldValues>(
-    defaultValues?: DefaultValues<TFormValues>,
+  defaultValues?: DefaultValues<TFormValues>,
 ): () => UseCustomFormReturn<TFormValues> {
-    return () => useCustomForm<TFormValues>({ defaultValues });
+  return () => useCustomForm<TFormValues>({ defaultValues });
 }
 
 interface RenderWithFormOptions<TFormValues extends FieldValues> {
-    defaultValues?: DefaultValues<TFormValues>;
+  defaultValues?: DefaultValues<TFormValues>;
 }
 
 /**
@@ -123,26 +139,28 @@ interface RenderWithFormOptions<TFormValues extends FieldValues> {
  * (getValues/trigger/formState/etc.) for assertions.
  */
 export function renderWithForm<TFormValues extends FieldValues>(
-    renderChildren: (methods: UseFormReturn<TFormValues>) => ReactElement,
-    options: RenderWithFormOptions<TFormValues> = {},
+  renderChildren: (methods: UseFormReturn<TFormValues>) => ReactElement,
+  options: RenderWithFormOptions<TFormValues> = {},
 ): ReturnType<typeof render> & { methods: UseFormReturn<TFormValues> } {
-    let capturedMethods: UseFormReturn<TFormValues> | undefined;
+  let capturedMethods: UseFormReturn<TFormValues> | undefined;
 
-    function Harness(): ReactElement {
-        const methods = useForm<TFormValues>({
-            mode: "onTouched",
-            reValidateMode: "onChange",
-            defaultValues: options.defaultValues,
-        });
-        capturedMethods = methods;
-        return renderChildren(methods);
-    }
+  function Harness(): ReactElement {
+    const methods = useForm<TFormValues>({
+      mode: "onTouched",
+      reValidateMode: "onChange",
+      defaultValues: options.defaultValues,
+    });
+    capturedMethods = methods;
+    return renderChildren(methods);
+  }
 
-    const renderResult = render(<Harness />);
+  const renderResult = render(<Harness />);
 
-    if (!capturedMethods) {
-        throw new Error("Form methods were not captured; Harness did not render synchronously");
-    }
+  if (!capturedMethods) {
+    throw new Error(
+      "Form methods were not captured; Harness did not render synchronously",
+    );
+  }
 
-    return { ...renderResult, methods: capturedMethods };
+  return { ...renderResult, methods: capturedMethods };
 }
