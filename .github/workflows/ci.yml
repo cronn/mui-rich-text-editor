@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Format, lint, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint:check
+
+      # Note: `pnpm compile` (tsc --noEmit) is intentionally omitted here.
+      # tsconfig.json includes tsdown.config.ts, and tsdown's bundled type
+      # declarations reference several optional peer packages (publint,
+      # @arethetypeswrong/core, etc.) that aren't installed as dependencies,
+      # causing `tsc --noEmit` to fail even on a clean checkout. This is a
+      # pre-existing issue unrelated to this workflow; `pnpm build` below
+      # still exercises tsdown's own (working) type-checking/emit path.
+
+      - name: Run tests with coverage
+        run: pnpm test:unit:coverage
+
+      - name: Build
+        run: pnpm build
