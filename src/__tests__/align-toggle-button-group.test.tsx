@@ -6,6 +6,7 @@ import { AlignToggleButtonGroup } from "../components/AlignToggleButtonGroup";
 import { useEditorActiveState } from "../lib/useEditorActiveState";
 import { renderEditor } from "./render-editor";
 import type { CustomEditor } from "../lib/useCustomEditor";
+import type { ActiveMarks } from "../lib/useEditorActiveState";
 
 afterEach(() => {
   cleanup();
@@ -83,5 +84,42 @@ describe("AlignToggleButtonGroup", () => {
         "true",
       );
     });
+  });
+
+  it("uses custom translations for button aria-labels", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    const staticActive: ActiveMarks = {
+      bold: false,
+      italic: false,
+      underline: false,
+      bulletList: false,
+      orderedList: false,
+      link: false,
+      fontColor: undefined,
+      fontSize: undefined,
+      textAlign: undefined,
+      imageAlign: undefined,
+    };
+    render(
+      <AlignToggleButtonGroup
+        editor={editor}
+        active={staticActive}
+        translations={{
+          left: "Align left",
+          center: "Align center",
+          right: "Align right",
+        }}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Align left" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Align center" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Align right" }),
+    ).toBeInTheDocument();
   });
 });

@@ -48,4 +48,16 @@ describe("FontSizeDropdown", () => {
       "MuiIconButton-colorPrimary",
     );
   });
+
+  it("uses custom translations for the tooltip", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    render(
+      <FontSizeDropdown
+        editor={editor}
+        translations={{ tooltip: "Font size" }}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Font size" })).toBeInTheDocument();
+  });
 });

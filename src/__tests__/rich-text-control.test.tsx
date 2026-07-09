@@ -185,6 +185,82 @@ describe("RichTextControl", () => {
     });
   });
 
+  it("shows the validation error message as helperText when the field is invalid", async () => {
+    const { methods, container } = renderWithForm<FormValues>(
+      ({ control }) => (
+        <RichTextControl
+          label="Description"
+          useController={createBoundTestController<FormValues>({
+            control,
+            name: "content",
+            rules: { required: "Description is required" },
+          })}
+          {...linkDialogProps()}
+        />
+      ),
+      { defaultValues: { content: "" } },
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector(".ProseMirror")).not.toBeNull();
+    });
+
+    await act(async () => {
+      await methods.trigger("content");
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Description is required")).toBeInTheDocument();
+    });
+  });
+
+  it("does not render helperText when hideHelperText is true", async () => {
+    renderWithForm<FormValues>(({ control }) => (
+      <RichTextControl
+        label="Description"
+        helperText="Some hint"
+        hideHelperText
+        useController={createBoundTestController<FormValues>({
+          control,
+          name: "content",
+        })}
+        {...linkDialogProps()}
+      />
+    ));
+
+    await waitFor(() => {
+      expect(screen.queryByText("Some hint")).not.toBeInTheDocument();
+    });
+  });
+
+  it("syncs an externally updated field value into the editor when the editor is empty", async () => {
+    const { methods, container } = renderWithForm<FormValues>(
+      ({ control }) => (
+        <RichTextControl
+          label="Description"
+          useController={createBoundTestController<FormValues>({
+            control,
+            name: "content",
+          })}
+          {...linkDialogProps()}
+        />
+      ),
+      { defaultValues: { content: "" } },
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector(".ProseMirror")).not.toBeNull();
+    });
+
+    act(() => {
+      methods.setValue("content", "<p>Injected</p>");
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Injected")).toBeInTheDocument();
+    });
+  });
+
   it("passes disableLink/disableImageUpload through to the toolbar", async () => {
     renderWithForm<FormValues>(({ control }) => (
       <RichTextControl

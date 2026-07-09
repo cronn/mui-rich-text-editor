@@ -129,4 +129,37 @@ describe("EditorToolbar", () => {
       screen.queryByTestId("rich-text-image-upload"),
     ).not.toBeInTheDocument();
   });
+
+  it("uses custom translations for toolbar button labels", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    renderToolbar(
+      {
+        translations: {
+          bold: "Bold",
+          italic: "Italic",
+          underline: "Underline",
+          bulletList: "Bullet List",
+          orderedList: "Ordered List",
+          alignToggleButtonGroup: { left: "Left", center: "Center", right: "Right" },
+          linkButtonTranslations: {
+            tooltip: "Add link",
+            linkDialog: {
+              title: "Insert Link",
+              urlLabel: "URL",
+              urlRequiredMessage: "Required",
+              ctaLabel: "Insert",
+            },
+          },
+        },
+      },
+      editor,
+    );
+
+    expect(screen.getByRole("button", { name: "Bold" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Italic" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Underline" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Bullet List" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ordered List" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add link" })).toBeInTheDocument();
+  });
 });

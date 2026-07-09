@@ -99,4 +99,11 @@ describe("useFormEditor", () => {
     const { editor } = await mountFormEditor("<p>Hello</p>", true);
     expect(editor.isEditable).toBe(false);
   });
+
+  it("normalizes the ProseMirror trailing-break paragraph to empty string on init", async () => {
+    const { editor } = await mountFormEditor(
+      '<p><br class="ProseMirror-trailingBreak"></p>',
+    );
+    expect(editor.getText()).toBe("");
+  });
 });

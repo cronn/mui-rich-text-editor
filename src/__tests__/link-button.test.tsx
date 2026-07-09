@@ -93,6 +93,50 @@ describe("LinkButton", () => {
     });
   });
 
+  it("applies primary color class when active is true", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello world</p>" });
+    const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
+
+    render(
+      <LinkButton
+        editor={editor}
+        active={true}
+        useForm={useForm}
+        useUrlFieldController={useTestFormController()}
+      />,
+    );
+
+    expect(screen.getByRole("button")).toHaveClass("MuiIconButton-colorPrimary");
+  });
+
+  it("closes the dialog via the X button when the button is active", async () => {
+    const user = userEvent.setup();
+    const { editor } = await renderEditor({ content: "<p>Hello world</p>" });
+    const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
+
+    render(
+      <LinkButton
+        editor={editor}
+        active={true}
+        useForm={useForm}
+        useUrlFieldController={useTestFormController()}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Link hinzufügen" }));
+    expect(
+      screen.getByRole("heading", { name: "Link hinzufügen" }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Abbrechen" }));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("heading", { name: "Link hinzufügen" }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   it("passes custom translations through to the tooltip and nested LinkDialog", async () => {
     const user = userEvent.setup();
     const { editor } = await renderEditor({ content: "<p>Hello world</p>" });

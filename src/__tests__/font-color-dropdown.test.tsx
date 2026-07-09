@@ -54,6 +54,43 @@ describe("FontColorDropdown", () => {
     });
   });
 
+  it("renders all 9 color labels in the menu when opened", async () => {
+    const user = userEvent.setup();
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    render(<FontColorDropdown editor={editor} />);
+
+    await user.click(screen.getByRole("button"));
+
+    for (const label of [
+      "Schwarz",
+      "Grau",
+      "Rot",
+      "Blau",
+      "Türkis",
+      "Grün",
+      "Orange",
+      "Lila",
+      "Pink",
+    ]) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
+  });
+
+  it("closes the color menu after a color is selected", async () => {
+    const user = userEvent.setup();
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+    render(<FontColorDropdown editor={editor} />);
+
+    await user.click(screen.getByRole("button"));
+    expect(screen.getByText("Schwarz")).toBeInTheDocument();
+
+    await user.click(screen.getByText("Schwarz"));
+
+    await waitFor(() => {
+      expect(screen.queryByText("Schwarz")).not.toBeInTheDocument();
+    });
+  });
+
   it("uses custom translations for color labels", async () => {
     const user = userEvent.setup();
     const { editor } = await renderEditor({ content: "<p>Hello</p>" });

@@ -101,6 +101,78 @@ describe("useCustomEditor", () => {
     ).toBe("right");
   });
 
+  it("toggles bullet list on and off", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+
+    runInAct(() => {
+      editor.chain().focus().toggleBulletList().run();
+    });
+    expect(editor.isActive("bulletList")).toBe(true);
+
+    runInAct(() => {
+      editor.chain().focus().toggleBulletList().run();
+    });
+    expect(editor.isActive("bulletList")).toBe(false);
+  });
+
+  it("toggles ordered list on and off", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+
+    runInAct(() => {
+      editor.chain().focus().toggleOrderedList().run();
+    });
+    expect(editor.isActive("orderedList")).toBe(true);
+
+    runInAct(() => {
+      editor.chain().focus().toggleOrderedList().run();
+    });
+    expect(editor.isActive("orderedList")).toBe(false);
+  });
+
+  it("applies bold and italic simultaneously", async () => {
+    const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+
+    runInAct(() => {
+      editor.commands.selectAll();
+      editor.chain().focus().toggleBold().toggleItalic().run();
+    });
+
+    expect(editor.isActive("bold")).toBe(true);
+    expect(editor.isActive("italic")).toBe(true);
+    expect(editor.getHTML()).toContain("<strong>");
+    expect(editor.getHTML()).toContain("<em>");
+  });
+
+  describe("link mark", () => {
+    it("sets a link mark on selected text", async () => {
+      const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+
+      runInAct(() => {
+        editor.commands.selectAll();
+        editor.chain().focus().setLink({ href: "https://example.com" }).run();
+      });
+
+      expect(editor.isActive("link")).toBe(true);
+      expect(editor.getHTML()).toContain('href="https://example.com"');
+    });
+
+    it("removes the link mark via unsetLink", async () => {
+      const { editor } = await renderEditor({ content: "<p>Hello</p>" });
+
+      runInAct(() => {
+        editor.commands.selectAll();
+        editor.chain().focus().setLink({ href: "https://example.com" }).run();
+      });
+
+      runInAct(() => {
+        editor.chain().focus().unsetLink().run();
+      });
+
+      expect(editor.isActive("link")).toBe(false);
+      expect(editor.getHTML()).not.toContain("href=");
+    });
+  });
+
   describe("customImage node", () => {
     it("insertCustomImage inserts an image node with given attributes", async () => {
       const { editor } = await renderEditor({ content: "<p></p>" });
