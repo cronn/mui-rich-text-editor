@@ -1,0 +1,12 @@
+# IntelliJ
+.idea
+*.iml
+
+# dependencies
+node_modules
+
+# builds
+dist
+
+# tests
+coverage
