@@ -104,7 +104,7 @@ export function FontColorDropdown(props: FontColorDropdownProps): ReactElement {
     <Box>
       <Tooltip title={translations.tooltip}>
         <IconButton
-          color={isActive ? "primary" : undefined}
+          color={isActive ? "primary" : "default"}
           onClick={handleOpenMenu}
           ref={menuButtonRef}
         >

@@ -40,8 +40,8 @@ export interface EditorToolbarTranslations {
   underline: string;
   bulletList: string;
   orderedList: string;
-  alignToggleButtonGroup: AlignToggleButtonGroupTranslations;
-  linkButtonTranslations: LinkButtonTranslations;
+  alignToggleButtonGroup?: AlignToggleButtonGroupTranslations;
+  linkButtonTranslations?: LinkButtonTranslations;
 }
 
 export interface EditorToolbarProps extends LinkButtonInjectedProps {
@@ -87,11 +87,7 @@ export function EditorToolbar(props: EditorToolbarProps): ReactElement {
       <AlignToggleButtonGroup
         editor={editor}
         active={active}
-        translations={
-          props.translations
-            ? props.translations.alignToggleButtonGroup
-            : undefined
-        }
+        translations={props.translations?.alignToggleButtonGroup}
       />
       <Tooltip title={translations.bulletList}>
         <IconButton
@@ -112,11 +108,7 @@ export function EditorToolbar(props: EditorToolbarProps): ReactElement {
       {disableLink !== true && (
         <LinkButton
           {...linkButtonProps}
-          translations={
-            props.translations
-              ? props.translations.linkButtonTranslations
-              : undefined
-          }
+          translations={props.translations?.linkButtonTranslations}
           editor={editor}
           active={active.link}
         />

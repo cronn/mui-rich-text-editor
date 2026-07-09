@@ -18,7 +18,7 @@ export function RichTextViewer(props: RichTextViewerProps): ReactNode {
   });
 
   useEffect(() => {
-    if (isDefined(props.value) && isDefined(editor) && !editor.isDestroyed) {
+    if (isDefined(editor) && !editor.isDestroyed) {
       editor.commands.setContent(props.value);
     }
   }, [props.value, editor]);

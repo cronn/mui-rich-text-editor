@@ -5,7 +5,7 @@ export const Colors = {
   Blue: "#1976d2",
   Turquoise: "#0c8b97",
   Green: "#388e3c",
-  Orange: "#e36f00ff",
+  Orange: "#e36f00",
   Purple: "#7b1fa2",
   Pink: "#e91e63",
 } as const;
