@@ -106,7 +106,9 @@ describe("LinkButton", () => {
       />,
     );
 
-    expect(screen.getByRole("button")).toHaveClass("MuiIconButton-colorPrimary");
+    expect(screen.getByRole("button")).toHaveClass(
+      "MuiIconButton-colorPrimary",
+    );
   });
 
   it("closes the dialog via the X button when the button is active", async () => {

@@ -140,7 +140,11 @@ describe("EditorToolbar", () => {
           underline: "Underline",
           bulletList: "Bullet List",
           orderedList: "Ordered List",
-          alignToggleButtonGroup: { left: "Left", center: "Center", right: "Right" },
+          alignToggleButtonGroup: {
+            left: "Left",
+            center: "Center",
+            right: "Right",
+          },
           linkButtonTranslations: {
             tooltip: "Add link",
             linkDialog: {
@@ -157,9 +161,17 @@ describe("EditorToolbar", () => {
 
     expect(screen.getByRole("button", { name: "Bold" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Italic" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Underline" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Bullet List" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Ordered List" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Add link" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Underline" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Bullet List" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Ordered List" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Add link" }),
+    ).toBeInTheDocument();
   });
 });

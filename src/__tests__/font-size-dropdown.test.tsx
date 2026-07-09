@@ -58,6 +58,8 @@ describe("FontSizeDropdown", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Font size" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Font size" }),
+    ).toBeInTheDocument();
   });
 });
