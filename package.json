@@ -42,7 +42,7 @@
     "test:unit": "vitest run",
     "test:unit:coverage": "vitest run --coverage",
     "version": "changeset version",
-    "release": "pnpm build && pnpm publish --no-git-checks --provenance"
+    "release": "pnpm build && pnpm publish --no-git-checks --provenance --access public"
   },
   "dependencies": {
     "@emotion/styled": "^11.14.1",
