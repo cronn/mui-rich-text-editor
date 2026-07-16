@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write   # required for npm provenance
-  contents: write   # required to push version commits and tags
-  pull-requests: write  # required for changesets to open version PRs
+  id-token: write # required for npm provenance
+  contents: write # required to push version commits and tags
+  pull-requests: write # required for changesets to open version PRs
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
