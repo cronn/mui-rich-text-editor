@@ -7,13 +7,9 @@ import {
   type FieldPathByValue,
   type FieldValues,
   type Message,
-  type Path,
-  type PathValue,
-  type Validate,
-  type ValidationValueMessage,
 } from "react-hook-form";
 import type { FieldRegistration } from "../components/RichTextControl";
-import type { InputBaseComponentProps, IconButtonProps } from "@mui/material";
+import type { IconButtonProps } from "@mui/material";
 
 export type Align = "left" | "center" | "right";
 
@@ -82,36 +78,11 @@ export interface RegisterFieldProps<
 > {
   control: Control<TFormValues>;
   name: FieldPathByValue<TFormValues, TFieldValue>;
-  rules?: CustomValidationRules<TFormValues, TFieldValue>;
+  rules?: CustomValidationRules;
 }
 
-export interface CustomValidationRules<
-  TFormValues extends FieldValues = FieldValues,
-  TFieldValue = PathValue<TFormValues, Path<TFormValues>>,
-> {
+export interface CustomValidationRules {
   required?: Message;
-  min?: ValidationValueMessage<number>;
-  max?: ValidationValueMessage<number>;
-  minLength?: ValidationValueMessage<number>;
-  maxLength?: ValidationValueMessage<number>;
-  validate?:
-    | Validate<TFieldValue, TFormValues>
-    | Record<string, Validate<TFieldValue, TFormValues>>;
-  deps?: Path<TFormValues> | Array<Path<TFormValues>>;
-}
-
-export interface NativeInputProps {
-  inputMode?: InputBaseComponentProps["inputMode"];
-}
-
-export function getNativeInputProps(
-  props: NativeInputProps,
-): InputBaseComponentProps | undefined {
-  if (isUndefined(props.inputMode)) {
-    return undefined;
-  }
-
-  return { inputMode: props.inputMode };
 }
 
 export interface UseCustomFormProps<TFieldValues extends FieldValues> {
@@ -123,7 +94,7 @@ export function useCustomForm<TFormValues extends FieldValues>(
 ): {
   registerField: <TFieldValue = unknown>(
     path: FieldPathByValue<TFormValues, TFieldValue>,
-    rules?: CustomValidationRules<TFormValues, TFieldValue>,
+    rules?: CustomValidationRules,
   ) => RegisterFieldProps<TFormValues, TFieldValue>;
   getValues: UseFormGetValues<TFormValues>;
   trigger: UseFormTrigger<TFormValues>;
@@ -136,7 +107,7 @@ export function useCustomForm<TFormValues extends FieldValues>(
 
   function registerField<TFieldValue = unknown>(
     path: FieldPathByValue<TFormValues, TFieldValue>,
-    rules?: CustomValidationRules<TFormValues, TFieldValue>,
+    rules?: CustomValidationRules,
   ): RegisterFieldProps<TFormValues, TFieldValue> {
     return {
       control,

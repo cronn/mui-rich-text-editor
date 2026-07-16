@@ -117,9 +117,7 @@ export function LinkDialog(props: LinkDialogProps): ReactElement {
           variant="contained"
           size="large"
           data-testid="cta-button"
-          onClick={() => {
-            void handleSubmitClick();
-          }}
+          onClick={() => void handleSubmitClick()}
         >
           {translations.ctaLabel}
         </Button>
