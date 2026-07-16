@@ -12,6 +12,11 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text-summary", "html"],
       include: ["src/**/*.{js,jsx,ts,tsx}"],
+      exclude: [
+        ...(configDefaults.coverage?.exclude ?? []),
+        "src/__tests__/**",
+        "src/index.ts",
+      ],
     },
   },
 });
