@@ -24,12 +24,6 @@ jobs:
       - name: Run setup
         uses: ./.github/actions/setup
 
-      - name: Configure npm token
-        if: ${{ secrets.NPM_TOKEN != '' }}
-        run: pnpm config set "//registry.npmjs.org/:_authToken" "${NPM_TOKEN}"
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Create release PR or publish to npm
         uses: changesets/action@v1
         with:
