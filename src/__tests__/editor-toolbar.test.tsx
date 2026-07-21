@@ -3,8 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { EditorToolbar } from "../components/EditorToolbar";
-import type { LinkDialogFormValues } from "../components/LinkDialog";
-import { createTestUseForm, useTestFormController } from "./rhf-harness";
 import { renderEditor } from "./render-editor";
 
 afterEach(() => {
@@ -15,16 +13,7 @@ function renderToolbar(
   overrides: Partial<Parameters<typeof EditorToolbar>[0]> = {},
   editor: Parameters<typeof EditorToolbar>[0]["editor"],
 ) {
-  const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
-
-  return render(
-    <EditorToolbar
-      editor={editor}
-      useForm={useForm}
-      useUrlFieldController={useTestFormController()}
-      {...overrides}
-    />,
-  );
+  return render(<EditorToolbar editor={editor} {...overrides} />);
 }
 
 describe("EditorToolbar", () => {

@@ -12,7 +12,7 @@ import { AlignToggleButtonGroup } from "./AlignToggleButtonGroup";
 import { FontColorDropdown } from "./FontColorDropdown";
 import { FontSizeDropdown } from "./FontSizeDropdown";
 import { ImageUploadButton } from "./ImageUploadButton";
-import type { LinkButtonProps, LinkButtonTranslations } from "./LinkButton";
+import type { LinkButtonTranslations } from "./LinkButton";
 import { LinkButton } from "./LinkButton";
 import type { CustomEditor } from "../lib/useCustomEditor";
 import { useEditorActiveState } from "../lib/useEditorActiveState";
@@ -29,11 +29,6 @@ export const ToolbarContainer: React.ComponentType<BoxProps> = styled(Box)(
   }),
 );
 
-type LinkButtonInjectedProps = Omit<
-  LinkButtonProps,
-  "editor" | "active" | "translations"
->;
-
 export interface EditorToolbarTranslations {
   bold: string;
   italic: string;
@@ -44,7 +39,7 @@ export interface EditorToolbarTranslations {
   linkButtonTranslations?: LinkButtonTranslations;
 }
 
-export interface EditorToolbarProps extends LinkButtonInjectedProps {
+export interface EditorToolbarProps {
   editor: CustomEditor;
   disableLink?: boolean;
   disableImageUpload?: boolean;
@@ -53,7 +48,7 @@ export interface EditorToolbarProps extends LinkButtonInjectedProps {
 
 export function EditorToolbar(props: EditorToolbarProps): ReactElement {
   const active = useEditorActiveState(props.editor);
-  const { editor, disableLink, disableImageUpload, ...linkButtonProps } = props;
+  const { editor, disableLink, disableImageUpload } = props;
   const translations = props.translations ?? defaultTranslations.editorToolbar;
 
   return (
@@ -107,7 +102,6 @@ export function EditorToolbar(props: EditorToolbarProps): ReactElement {
       </Tooltip>
       {disableLink !== true && (
         <LinkButton
-          {...linkButtonProps}
           translations={props.translations?.linkButtonTranslations}
           editor={editor}
           active={active.link}

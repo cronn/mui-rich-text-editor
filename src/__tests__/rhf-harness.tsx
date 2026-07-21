@@ -12,9 +12,7 @@ import type {
   CustomFormControlProps,
   RegisterFieldProps,
   UseControllerHook,
-  UseCustomFormReturn,
 } from "../lib/utils";
-import { useCustomForm } from "../lib/utils";
 
 /**
  * A real `useController`-based implementation of the `UseControllerHook`
@@ -116,17 +114,6 @@ export function createBoundTestController<TFormValues extends FieldValues>(
   }
 
   return useBoundController as unknown as UseControllerHook<TFormValues>;
-}
-
-/**
- * Factory producing a `useForm` hook compatible with `LinkDialog`'s
- * `UseLinkDialogForm` contract, backed by the library's own real
- * `useCustomForm` (react-hook-form under the hood).
- */
-export function createTestUseForm<TFormValues extends FieldValues>(
-  defaultValues?: DefaultValues<TFormValues>,
-): () => UseCustomFormReturn<TFormValues> {
-  return () => useCustomForm<TFormValues>({ defaultValues });
 }
 
 interface RenderWithFormOptions<TFormValues extends FieldValues> {

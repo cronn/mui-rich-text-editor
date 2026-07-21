@@ -2,26 +2,16 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import type { LinkDialogFormValues } from "../components/LinkDialog";
 import { LinkDialog } from "../components/LinkDialog";
-import { createTestUseForm, useTestFormController } from "./rhf-harness";
 
 function renderLinkDialog(
   overrides: Partial<Parameters<typeof LinkDialog>[0]> = {},
 ) {
   const onSubmit = vi.fn();
   const onClose = vi.fn();
-  const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
 
   const renderResult = render(
-    <LinkDialog
-      open
-      onSubmit={onSubmit}
-      onClose={onClose}
-      useForm={useForm}
-      useUrlFieldController={useTestFormController()}
-      {...overrides}
-    />,
+    <LinkDialog open onSubmit={onSubmit} onClose={onClose} {...overrides} />,
   );
 
   return { onSubmit, onClose, ...renderResult };
