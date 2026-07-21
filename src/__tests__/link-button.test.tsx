@@ -3,26 +3,16 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { LinkButton } from "../components/LinkButton";
-import type { LinkDialogFormValues } from "../components/LinkDialog";
-import { createTestUseForm, useTestFormController } from "./rhf-harness";
 import { runInAct, renderEditor } from "./render-editor";
 
 afterEach(() => {
   cleanup();
 });
 
-async function renderLinkButton() {
+async function renderLinkButton(active = false) {
   const { editor } = await renderEditor({ content: "<p>Hello world</p>" });
-  const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
 
-  render(
-    <LinkButton
-      editor={editor}
-      active={false}
-      useForm={useForm}
-      useUrlFieldController={useTestFormController()}
-    />,
-  );
+  render(<LinkButton editor={editor} active={active} />);
 
   return { editor };
 }
@@ -95,16 +85,8 @@ describe("LinkButton", () => {
 
   it("applies primary color class when active is true", async () => {
     const { editor } = await renderEditor({ content: "<p>Hello world</p>" });
-    const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
 
-    render(
-      <LinkButton
-        editor={editor}
-        active={true}
-        useForm={useForm}
-        useUrlFieldController={useTestFormController()}
-      />,
-    );
+    render(<LinkButton editor={editor} active={true} />);
 
     expect(screen.getByRole("button")).toHaveClass(
       "MuiIconButton-colorPrimary",
@@ -114,16 +96,8 @@ describe("LinkButton", () => {
   it("closes the dialog via the X button when the button is active", async () => {
     const user = userEvent.setup();
     const { editor } = await renderEditor({ content: "<p>Hello world</p>" });
-    const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
 
-    render(
-      <LinkButton
-        editor={editor}
-        active={true}
-        useForm={useForm}
-        useUrlFieldController={useTestFormController()}
-      />,
-    );
+    render(<LinkButton editor={editor} active={true} />);
 
     await user.click(screen.getByRole("button", { name: "Link hinzufügen" }));
     expect(
@@ -142,14 +116,11 @@ describe("LinkButton", () => {
   it("passes custom translations through to the tooltip and nested LinkDialog", async () => {
     const user = userEvent.setup();
     const { editor } = await renderEditor({ content: "<p>Hello world</p>" });
-    const useForm = createTestUseForm<LinkDialogFormValues>({ url: "" });
 
     render(
       <LinkButton
         editor={editor}
         active={false}
-        useForm={useForm}
-        useUrlFieldController={useTestFormController()}
         translations={{
           tooltip: "Add a link",
           linkDialog: {

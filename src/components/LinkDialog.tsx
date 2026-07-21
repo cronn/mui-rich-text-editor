@@ -10,15 +10,12 @@ import {
   Dialog,
   DialogActions,
   DialogContent as MuiDialogContent,
+  TextField,
 } from "@mui/material";
-import { TextControl } from "./TextControl";
+import { useController } from "react-hook-form";
 import type { DialogCloseButtonTranslations } from "./DialogCloseButton";
 import { DialogCloseButton } from "./DialogCloseButton";
-import type {
-  FormInputValues,
-  UseControllerHook,
-  CustomFormRegister,
-} from "../lib/utils";
+import { useCustomForm } from "../lib/utils";
 import defaultTranslations from "../lib/defaultTranslations";
 import type { ReactElement } from "react";
 
@@ -49,17 +46,9 @@ const DialogContent: React.ComponentType<DialogContentProps> = styled(
   overflow: "visible",
 }));
 
-export type LinkDialogFormValues = FormInputValues<{
+interface LinkFormValues {
   url: string;
-}>;
-
-export interface UseLinkDialogFormReturn {
-  registerField: CustomFormRegister<LinkDialogFormValues>;
-  getValues: () => LinkDialogFormValues;
-  trigger: () => Promise<boolean>;
 }
-
-export type UseLinkDialogForm = () => UseLinkDialogFormReturn;
 
 export interface LinkDialogTranslations {
   title: string;
@@ -73,13 +62,21 @@ export interface LinkDialogProps {
   onSubmit: (url: string) => void;
   onClose: () => void;
   open: boolean;
-  useForm: UseLinkDialogForm;
-  useUrlFieldController: UseControllerHook<LinkDialogFormValues>;
   translations?: LinkDialogTranslations;
 }
 
 export function LinkDialog(props: LinkDialogProps): ReactElement {
-  const { registerField, getValues, trigger } = props.useForm();
+  const { control, getValues, trigger } = useCustomForm<LinkFormValues>({
+    defaultValues: { url: "" },
+  });
+
+  const translations = props.translations ?? defaultTranslations.linkDialog;
+
+  const { field, fieldState } = useController<LinkFormValues>({
+    control,
+    name: "url",
+    rules: { required: translations.urlRequiredMessage },
+  });
 
   async function handleSubmitClick() {
     const valid = await trigger();
@@ -91,8 +88,6 @@ export function LinkDialog(props: LinkDialogProps): ReactElement {
     props.onClose();
   }
 
-  const translations = props.translations ?? defaultTranslations.linkDialog;
-
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
       <StyledDialogTitle>
@@ -103,12 +98,19 @@ export function LinkDialog(props: LinkDialogProps): ReactElement {
         />
       </StyledDialogTitle>
       <DialogContent>
-        <TextControl
-          {...registerField("url", {
-            required: translations.urlRequiredMessage,
-          })}
+        <TextField
+          inputRef={field.ref}
+          value={field.value}
           label={translations.urlLabel}
-          useController={props.useUrlFieldController}
+          required
+          fullWidth
+          error={fieldState.invalid}
+          helperText={fieldState.error?.message}
+          onChange={(e) => field.onChange(e.target.value)}
+          onBlur={(e) => {
+            field.onChange(e.target.value.trim());
+            field.onBlur();
+          }}
         />
       </DialogContent>
       <StyledDialogActions>

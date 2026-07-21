@@ -9,10 +9,13 @@ import { styled } from "@mui/system";
 
 import type { AlignToggleButtonGroupTranslations } from "./AlignToggleButtonGroup";
 import { AlignToggleButtonGroup } from "./AlignToggleButtonGroup";
+import type { FontColorDropdownTranslations } from "./FontColorDropdown";
 import { FontColorDropdown } from "./FontColorDropdown";
+import type { FontSizeDropdownTranslations } from "./FontSizeDropdown";
 import { FontSizeDropdown } from "./FontSizeDropdown";
+import type { ImageUploadButtonTranslations } from "./ImageUploadButton";
 import { ImageUploadButton } from "./ImageUploadButton";
-import type { LinkButtonProps, LinkButtonTranslations } from "./LinkButton";
+import type { LinkButtonTranslations } from "./LinkButton";
 import { LinkButton } from "./LinkButton";
 import type { CustomEditor } from "../lib/useCustomEditor";
 import { useEditorActiveState } from "../lib/useEditorActiveState";
@@ -29,11 +32,6 @@ export const ToolbarContainer: React.ComponentType<BoxProps> = styled(Box)(
   }),
 );
 
-type LinkButtonInjectedProps = Omit<
-  LinkButtonProps,
-  "editor" | "active" | "translations"
->;
-
 export interface EditorToolbarTranslations {
   bold: string;
   italic: string;
@@ -42,9 +40,12 @@ export interface EditorToolbarTranslations {
   orderedList: string;
   alignToggleButtonGroup?: AlignToggleButtonGroupTranslations;
   linkButtonTranslations?: LinkButtonTranslations;
+  fontSizeDropdown?: FontSizeDropdownTranslations;
+  fontColorDropdown?: FontColorDropdownTranslations;
+  imageUploadButton?: ImageUploadButtonTranslations;
 }
 
-export interface EditorToolbarProps extends LinkButtonInjectedProps {
+export interface EditorToolbarProps {
   editor: CustomEditor;
   disableLink?: boolean;
   disableImageUpload?: boolean;
@@ -53,7 +54,7 @@ export interface EditorToolbarProps extends LinkButtonInjectedProps {
 
 export function EditorToolbar(props: EditorToolbarProps): ReactElement {
   const active = useEditorActiveState(props.editor);
-  const { editor, disableLink, disableImageUpload, ...linkButtonProps } = props;
+  const { editor, disableLink, disableImageUpload } = props;
   const translations = props.translations ?? defaultTranslations.editorToolbar;
 
   return (
@@ -82,8 +83,16 @@ export function EditorToolbar(props: EditorToolbarProps): ReactElement {
           <FormatUnderlinedIcon />
         </IconButton>
       </Tooltip>
-      <FontColorDropdown editor={editor} activeFontColor={active.fontColor} />
-      <FontSizeDropdown editor={editor} activeFontSize={active.fontSize} />
+      <FontColorDropdown
+        editor={editor}
+        activeFontColor={active.fontColor}
+        translations={props.translations?.fontColorDropdown}
+      />
+      <FontSizeDropdown
+        editor={editor}
+        activeFontSize={active.fontSize}
+        translations={props.translations?.fontSizeDropdown}
+      />
       <AlignToggleButtonGroup
         editor={editor}
         active={active}
@@ -107,13 +116,17 @@ export function EditorToolbar(props: EditorToolbarProps): ReactElement {
       </Tooltip>
       {disableLink !== true && (
         <LinkButton
-          {...linkButtonProps}
           translations={props.translations?.linkButtonTranslations}
           editor={editor}
           active={active.link}
         />
       )}
-      {disableImageUpload !== true && <ImageUploadButton editor={editor} />}
+      {disableImageUpload !== true && (
+        <ImageUploadButton
+          editor={editor}
+          translations={props.translations?.imageUploadButton}
+        />
+      )}
     </ToolbarContainer>
   );
 }

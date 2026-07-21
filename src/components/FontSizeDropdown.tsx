@@ -8,14 +8,14 @@ import defaultTranslations from "../lib/defaultTranslations";
 
 const sizes = ["12px", "14px", "16px", "18px", "20px", "24px", "28px"];
 
-interface FontSizeDropdownPropsTranslations {
+export interface FontSizeDropdownTranslations {
   tooltip: string;
 }
 
 interface FontSizeDropdownProps {
   editor: CustomEditor;
   activeFontSize?: string;
-  translations?: FontSizeDropdownPropsTranslations;
+  translations?: FontSizeDropdownTranslations;
 }
 
 export function FontSizeDropdown(props: FontSizeDropdownProps): ReactElement {

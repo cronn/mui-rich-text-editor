@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   controlledValue,
+  getNativeInputProps,
   getToolbarButtonColor,
   isDefined,
   isUndefined,
@@ -52,6 +53,18 @@ describe("getToolbarButtonColor", () => {
 
   it("returns 'default' when inactive", () => {
     expect(getToolbarButtonColor(false)).toBe("default");
+  });
+});
+
+describe("getNativeInputProps", () => {
+  it("returns undefined when inputMode is not set", () => {
+    expect(getNativeInputProps({})).toBeUndefined();
+  });
+
+  it("returns an object with inputMode when set", () => {
+    expect(getNativeInputProps({ inputMode: "numeric" })).toEqual({
+      inputMode: "numeric",
+    });
   });
 });
 
