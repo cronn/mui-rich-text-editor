@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import type { ReactElement } from "react";
 import { useState } from "react";
 
-import type { LinkDialogProps, LinkDialogTranslations } from "./LinkDialog";
+import type { LinkDialogTranslations } from "./LinkDialog";
 import { LinkDialog } from "./LinkDialog";
 import type { CustomEditor } from "../lib/useCustomEditor";
 import { getToolbarButtonColor } from "../lib/utils";
@@ -16,17 +16,12 @@ function normalizeUrl(url: string): string {
   return url;
 }
 
-type LinkDialogInjectedProps = Omit<
-  LinkDialogProps,
-  "onSubmit" | "onClose" | "open" | "translations"
->;
-
 export interface LinkButtonTranslations {
   tooltip: string;
   linkDialog: LinkDialogTranslations;
 }
 
-export interface LinkButtonProps extends LinkDialogInjectedProps {
+export interface LinkButtonProps {
   editor: CustomEditor;
   active: boolean;
   translations?: LinkButtonTranslations;
@@ -34,7 +29,6 @@ export interface LinkButtonProps extends LinkDialogInjectedProps {
 
 export function LinkButton(props: LinkButtonProps): ReactElement {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
-  const { editor, active, ...linkDialogProps } = props;
 
   function openLinkDialog() {
     setLinkDialogOpen(true);
@@ -45,7 +39,7 @@ export function LinkButton(props: LinkButtonProps): ReactElement {
   }
 
   function handleLinkSubmit(url: string) {
-    editor
+    props.editor
       .chain()
       .focus()
       .setLink({ href: normalizeUrl(url) })
@@ -58,7 +52,7 @@ export function LinkButton(props: LinkButtonProps): ReactElement {
     <>
       <Tooltip title={translations.tooltip}>
         <IconButton
-          color={getToolbarButtonColor(active)}
+          color={getToolbarButtonColor(props.active)}
           onClick={openLinkDialog}
         >
           <LinkIcon />
@@ -66,7 +60,6 @@ export function LinkButton(props: LinkButtonProps): ReactElement {
       </Tooltip>
       {linkDialogOpen && (
         <LinkDialog
-          {...linkDialogProps}
           open={linkDialogOpen}
           onClose={closeLinkDialog}
           onSubmit={handleLinkSubmit}

@@ -3,28 +3,12 @@ import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 
-import type { LinkDialogFormValues } from "../components/LinkDialog";
 import type { RichTextControlHandle } from "../components/RichTextControl";
 import { RichTextControl } from "../components/RichTextControl";
-import {
-  createBoundTestController,
-  createTestUseForm,
-  renderWithForm,
-  useTestFormController,
-} from "./rhf-harness";
+import { createBoundTestController, renderWithForm } from "./rhf-harness";
 
 interface FormValues {
   content: string;
-}
-
-// `RichTextControl` renders a full `EditorToolbar` (including the link
-// button), so its props always require a `useForm`/`useUrlFieldController`
-// pair for the nested `LinkDialog`, even in tests that don't exercise linking.
-function linkDialogProps() {
-  return {
-    useForm: createTestUseForm<LinkDialogFormValues>({ url: "" }),
-    useUrlFieldController: useTestFormController<LinkDialogFormValues>(),
-  };
 }
 
 describe("RichTextControl", () => {
@@ -36,7 +20,6 @@ describe("RichTextControl", () => {
           control,
           name: "content",
         })}
-        {...linkDialogProps()}
       />
     ));
 
@@ -54,7 +37,6 @@ describe("RichTextControl", () => {
           name: "content",
           rules: { required: "Required" },
         })}
-        {...linkDialogProps()}
       />
     ));
 
@@ -72,7 +54,6 @@ describe("RichTextControl", () => {
           control,
           name: "content",
         })}
-        {...linkDialogProps()}
       />
     ));
 
@@ -90,7 +71,6 @@ describe("RichTextControl", () => {
             control,
             name: "content",
           })}
-          {...linkDialogProps()}
         />
       ),
       { defaultValues: { content: "<p>Initial value</p>" } },
@@ -110,7 +90,6 @@ describe("RichTextControl", () => {
           control,
           name: "content",
         })}
-        {...linkDialogProps()}
       />
     ));
 
@@ -131,7 +110,6 @@ describe("RichTextControl", () => {
             control,
             name: "content",
           })}
-          {...linkDialogProps()}
         />
       ),
       { defaultValues: { content: "<p>Hello</p>" } },
@@ -165,7 +143,6 @@ describe("RichTextControl", () => {
             control,
             name: "content",
           })}
-          {...linkDialogProps()}
         />
       ),
       { defaultValues: { content: "<p>Original</p>" } },
@@ -195,7 +172,6 @@ describe("RichTextControl", () => {
             name: "content",
             rules: { required: "Description is required" },
           })}
-          {...linkDialogProps()}
         />
       ),
       { defaultValues: { content: "" } },
@@ -224,7 +200,6 @@ describe("RichTextControl", () => {
           control,
           name: "content",
         })}
-        {...linkDialogProps()}
       />
     ));
 
@@ -242,7 +217,6 @@ describe("RichTextControl", () => {
             control,
             name: "content",
           })}
-          {...linkDialogProps()}
         />
       ),
       { defaultValues: { content: "" } },
@@ -271,7 +245,6 @@ describe("RichTextControl", () => {
           control,
           name: "content",
         })}
-        {...linkDialogProps()}
       />
     ));
 

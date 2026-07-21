@@ -96,6 +96,7 @@ export function useCustomForm<TFormValues extends FieldValues>(
     path: FieldPathByValue<TFormValues, TFieldValue>,
     rules?: CustomValidationRules,
   ) => RegisterFieldProps<TFormValues, TFieldValue>;
+  control: Control<TFormValues>;
   getValues: UseFormGetValues<TFormValues>;
   trigger: UseFormTrigger<TFormValues>;
 } {
@@ -118,6 +119,7 @@ export function useCustomForm<TFormValues extends FieldValues>(
 
   return {
     registerField,
+    control,
     getValues,
     trigger,
   };
