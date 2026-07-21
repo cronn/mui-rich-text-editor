@@ -1,5 +1,11 @@
 # @cronn/mui-rich-text-editor
 
+## 0.2.0
+
+### Minor Changes
+
+- af6fd71: Call useForm within linkDialog instead of requiring its props at top level
+
 ## 0.1.1
 
 ### Patch Changes

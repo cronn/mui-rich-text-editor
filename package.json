@@ -1,6 +1,6 @@
 {
   "name": "@cronn/mui-rich-text-editor",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Edit rich text directly in React forms using Material UI",
   "keywords": [
     "rich text editor",
