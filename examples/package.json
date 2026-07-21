@@ -1,0 +1,44 @@
+{
+  "name": "mui-rich-text-editor-examples",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@cronn/mui-rich-text-editor": "file:..",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.5.0",
+    "@mui/material": "^6.5.0",
+    "@mui/system": "6.5.0",
+    "@tiptap/core": "^3.0.0",
+    "@tiptap/extension-color": "^3.0.0",
+    "@tiptap/extension-document": "^3.0.0",
+    "@tiptap/extension-image": "^3.0.0",
+    "@tiptap/extension-link": "^3.0.0",
+    "@tiptap/extension-paragraph": "^3.0.0",
+    "@tiptap/extension-text": "^3.0.0",
+    "@tiptap/extension-text-align": "^3.0.0",
+    "@tiptap/extension-text-style": "^3.0.0",
+    "@tiptap/extension-underline": "^3.0.0",
+    "@tiptap/extensions": "^3.0.0",
+    "@tiptap/react": "^3.0.0",
+    "@tiptap/starter-kit": "^3.0.0",
+    "prosemirror-state": "^1.4.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "7.71.2",
+    "react-syntax-highlighter": "^15.6.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@vitejs/plugin-react": "^4.4.1",
+    "typescript": "^6.0.0",
+    "vite": "^6.3.0"
+  }
+}
