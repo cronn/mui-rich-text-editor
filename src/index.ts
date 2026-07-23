@@ -1,3 +1,5 @@
+"use client";
+
 export { RichTextControl } from "./components/RichTextControl";
 export type {
   RichTextControlProps,
