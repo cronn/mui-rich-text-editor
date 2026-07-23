@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Background: dark navy rounded square -->
+  <rect width="100" height="100" rx="20" fill="#16213e"/>
+
+  <!-- Document card -->
+  <rect x="18" y="22" width="64" height="56" rx="6" fill="white" opacity="0.97"/>
+
+  <!-- Green toolbar -->
+  <rect x="18" y="22" width="64" height="16" rx="6" fill="#32b44a"/>
+  <rect x="18" y="32" width="64" height="6" fill="#32b44a"/>
+
+  <!-- Toolbar buttons -->
+  <rect x="24" y="26" width="8" height="8" rx="2" fill="white" opacity="0.95"/>
+  <rect x="36" y="26" width="8" height="8" rx="2" fill="white" opacity="0.5"/>
+  <rect x="48" y="26" width="8" height="8" rx="2" fill="white" opacity="0.5"/>
+  <rect x="62" y="28" width="14" height="4" rx="2" fill="white" opacity="0.25"/>
+
+  <!-- Heading line (green) -->
+  <rect x="25" y="46" width="44" height="5.5" rx="2.75" fill="#32b44a"/>
+
+  <!-- Body text lines (gray) -->
+  <rect x="25" y="57" width="50" height="3" rx="1.5" fill="#cbd5e1"/>
+  <rect x="25" y="64" width="44" height="3" rx="1.5" fill="#cbd5e1"/>
+  <rect x="25" y="71" width="30" height="3" rx="1.5" fill="#cbd5e1"/>
+
+  <!-- Blinking cursor -->
+  <rect x="55" y="69.5" width="2.5" height="9" rx="1.25" fill="#32b44a" opacity="0.9"/>
+
+  <!-- SPARKLES -->
+  <!-- Large 4-pt star, top-right, gold -->
+  <path d="M84,12 L85.6,17.4 L91,19 L85.6,20.6 L84,26 L82.4,20.6 L77,19 L82.4,17.4 Z" fill="#f9c74f"/>
+
+  <!-- Medium 4-pt star, bottom-left, green -->
+  <path d="M15,77 L16.2,81 L20.2,82.2 L16.2,83.4 L15,87.4 L13.8,83.4 L9.8,82.2 L13.8,81 Z" fill="#32b44a" opacity="0.9"/>
+
+  <!-- Small 4-pt star, top-left, gold -->
+  <path d="M22,11 L23,14.2 L26.2,15.2 L23,16.2 L22,19.4 L21,16.2 L17.8,15.2 L21,14.2 Z" fill="#f9c74f" opacity="0.75"/>
+
+  <!-- Tiny dots -->
+  <circle cx="91" cy="58" r="2" fill="#f9c74f" opacity="0.5"/>
+  <circle cx="87" cy="83" r="1.5" fill="#32b44a" opacity="0.55"/>
+</svg>
