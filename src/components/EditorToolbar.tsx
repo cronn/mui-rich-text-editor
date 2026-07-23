@@ -9,8 +9,11 @@ import { styled } from "@mui/system";
 
 import type { AlignToggleButtonGroupTranslations } from "./AlignToggleButtonGroup";
 import { AlignToggleButtonGroup } from "./AlignToggleButtonGroup";
+import type { FontColorDropdownTranslations } from "./FontColorDropdown";
 import { FontColorDropdown } from "./FontColorDropdown";
+import type { FontSizeDropdownTranslations } from "./FontSizeDropdown";
 import { FontSizeDropdown } from "./FontSizeDropdown";
+import type { ImageUploadButtonTranslations } from "./ImageUploadButton";
 import { ImageUploadButton } from "./ImageUploadButton";
 import type { LinkButtonTranslations } from "./LinkButton";
 import { LinkButton } from "./LinkButton";
@@ -37,6 +40,9 @@ export interface EditorToolbarTranslations {
   orderedList: string;
   alignToggleButtonGroup?: AlignToggleButtonGroupTranslations;
   linkButtonTranslations?: LinkButtonTranslations;
+  fontSizeDropdown?: FontSizeDropdownTranslations;
+  fontColorDropdown?: FontColorDropdownTranslations;
+  imageUploadButton?: ImageUploadButtonTranslations;
 }
 
 export interface EditorToolbarProps {
@@ -77,8 +83,16 @@ export function EditorToolbar(props: EditorToolbarProps): ReactElement {
           <FormatUnderlinedIcon />
         </IconButton>
       </Tooltip>
-      <FontColorDropdown editor={editor} activeFontColor={active.fontColor} />
-      <FontSizeDropdown editor={editor} activeFontSize={active.fontSize} />
+      <FontColorDropdown
+        editor={editor}
+        activeFontColor={active.fontColor}
+        translations={props.translations?.fontColorDropdown}
+      />
+      <FontSizeDropdown
+        editor={editor}
+        activeFontSize={active.fontSize}
+        translations={props.translations?.fontSizeDropdown}
+      />
       <AlignToggleButtonGroup
         editor={editor}
         active={active}
@@ -107,7 +121,12 @@ export function EditorToolbar(props: EditorToolbarProps): ReactElement {
           active={active.link}
         />
       )}
-      {disableImageUpload !== true && <ImageUploadButton editor={editor} />}
+      {disableImageUpload !== true && (
+        <ImageUploadButton
+          editor={editor}
+          translations={props.translations?.imageUploadButton}
+        />
+      )}
     </ToolbarContainer>
   );
 }

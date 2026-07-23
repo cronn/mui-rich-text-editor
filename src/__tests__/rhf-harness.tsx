@@ -70,7 +70,7 @@ function useControllerImpl<TFormValues extends FieldValues>(
 export function useTestFormController<
   TFormValues extends FieldValues,
 >(): UseControllerHook<TFormValues> {
-  return useControllerImpl as unknown as UseControllerHook<TFormValues>;
+  return useControllerImpl;
 }
 
 /**
@@ -113,7 +113,7 @@ export function createBoundTestController<TFormValues extends FieldValues>(
     return { field, register };
   }
 
-  return useBoundController as unknown as UseControllerHook<TFormValues>;
+  return useBoundController;
 }
 
 interface RenderWithFormOptions<TFormValues extends FieldValues> {
